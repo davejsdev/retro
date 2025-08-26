@@ -7,6 +7,7 @@ import { ModeratorDashboard } from "./components/ModeratorDashboard";
 import { ParticipantView } from "./components/ParticipantView";
 import { JoinRetrospective } from "./components/JoinRetrospective";
 import { useState, useEffect } from "react";
+import { Button } from "./components/ui/button";
 
 export default function App() {
   const [currentView, setCurrentView] = useState<"dashboard" | "join" | "retrospective">("dashboard");
@@ -44,22 +45,25 @@ export default function App() {
             Team Retrospective
           </h2>
           {currentView !== "dashboard" && (
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setCurrentView("dashboard")}
-              className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
+              className="text-sm text-gray-600 hover:text-gray-800"
             >
               ← Back to Dashboard
-            </button>
+            </Button>
           )}
         </div>
         <div className="flex items-center gap-4">
           {currentView === "dashboard" && (
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setCurrentView("join")}
-              className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
               Join Retrospective
-            </button>
+            </Button>
           )}
           <SignOutButton />
         </div>

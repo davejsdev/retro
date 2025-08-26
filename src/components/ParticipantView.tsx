@@ -3,6 +3,9 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import { Id } from "../../convex/_generated/dataModel";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 interface ParticipantViewProps {
   retrospectiveId: string;
@@ -58,7 +61,7 @@ export function ParticipantView({ retrospectiveId, participantId }: ParticipantV
   const toggleVote = useMutation(api.votes.toggle);
 
   // Get current participant info
-  const currentParticipant = participants?.find(p => p._id === participantId);
+  const currentParticipant = participants?.find((p: any) => p._id === participantId);
 
   // Get session ID and join if needed
   useEffect(() => {
@@ -78,7 +81,7 @@ export function ParticipantView({ retrospectiveId, participantId }: ParticipantV
         content: newCardContent[category].trim(),
       });
 
-      setNewCardContent(prev => ({ ...prev, [category]: "" }));
+      setNewCardContent((prev: any) => ({ ...prev, [category]: "" }));
       toast.success("Card added!");
     } catch (error) {
       toast.error("Failed to add card");
@@ -152,7 +155,7 @@ export function ParticipantView({ retrospectiveId, participantId }: ParticipantV
   };
 
   const isCardVotedByUser = (cardId: string) => {
-    return participantVotes?.some(vote => vote.cardId === cardId) || false;
+    return participantVotes?.some((vote: any) => vote.cardId === cardId) || false;
   };
 
   const remainingVotes = retrospective && participantVotes 
@@ -179,32 +182,34 @@ export function ParticipantView({ retrospectiveId, participantId }: ParticipantV
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">{retrospective.name}</h1>
-            {currentParticipant && (
-              <p className="text-lg text-gray-600 mt-2">
-                Welcome, <span className="font-medium text-blue-600">{currentParticipant.anonymousName}</span>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">{retrospective.name}</h1>
+              {currentParticipant && (
+                <p className="text-lg text-gray-600 mt-2">
+                  Welcome, <span className="font-medium text-blue-600">{currentParticipant.anonymousName}</span>
+                </p>
+              )}
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">
+                {participants.length} participant{participants.length !== 1 ? 's' : ''}
               </p>
-            )}
+              <p className="text-sm text-gray-600">
+                {remainingVotes} vote{remainingVotes !== 1 ? 's' : ''} remaining
+              </p>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-600">
-              {participants.length} participant{participants.length !== 1 ? 's' : ''}
-            </p>
-            <p className="text-sm text-gray-600">
-              {remainingVotes} vote{remainingVotes !== 1 ? 's' : ''} remaining
-            </p>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Categories */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {(Object.keys(categoryConfig) as Category[]).map((category) => {
           const config = categoryConfig[category];
-          const categoryCards = cards.filter(card => card.category === category);
+          const categoryCards = cards.filter((card: any) => card.category === category);
 
           return (
             <div key={category} className={`${config.color} rounded-xl border p-6`}>
@@ -215,93 +220,97 @@ export function ParticipantView({ retrospectiveId, participantId }: ParticipantV
               {/* Add new card */}
               {participantId && (
                 <div className="mb-6">
-                  <textarea
+                  <Textarea
                     value={newCardContent[category]}
-                    onChange={(e) => setNewCardContent(prev => ({ ...prev, [category]: e.target.value }))}
+                    onChange={(e) => setNewCardContent((prev: any) => ({ ...prev, [category]: e.target.value }))}
                     placeholder={`Add a ${config.title.toLowerCase()} card...`}
-                    className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    className="mb-2"
                     rows={3}
                   />
-                  <button
+                  <Button
                     onClick={() => handleCreateCard(category)}
                     disabled={!newCardContent[category].trim()}
-                    className={`mt-2 w-full px-4 py-2 text-white rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${config.buttonColor}`}
+                    className={`w-full ${config.buttonColor}`}
                   >
                     Add Card
-                  </button>
+                  </Button>
                 </div>
               )}
 
               {/* Cards */}
               <div className="space-y-3">
-                {categoryCards.map((card) => (
-                  <div key={card._id} className="bg-white rounded-lg p-4 shadow-sm border">
-                    {editingCard === card._id ? (
-                      <div className="space-y-3">
-                        <textarea
-                          value={editContent}
-                          onChange={(e) => setEditContent(e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-                          rows={3}
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleUpdateCard(card._id)}
-                            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={cancelEditing}
-                            className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 transition-colors"
-                          >
-                            Cancel
-                          </button>
+                {categoryCards.map((card: any) => (
+                  <Card key={card._id}>
+                    <CardContent className="pt-4">
+                      {editingCard === card._id ? (
+                        <div className="space-y-3">
+                          <Textarea
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)}
+                            rows={3}
+                          />
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => handleUpdateCard(card._id)}
+                            >
+                              Save
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={cancelEditing}
+                            >
+                              Cancel
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="text-gray-800 mb-3">{card.content}</p>
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-3">
-                            <span className="text-xs text-gray-500">
-                              by {card.participantName}
-                            </span>
-                            {participantId && card.participantId === participantId && (
-                              <div className="flex gap-1">
-                                <button
-                                  onClick={() => startEditing(card._id, card.content)}
-                                  className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteCard(card._id)}
-                                  className="text-xs text-red-600 hover:text-red-800 transition-colors"
-                                >
-                                  Delete
-                                </button>
-                              </div>
+                      ) : (
+                        <>
+                          <p className="text-gray-800 mb-3">{card.content}</p>
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                              <span className="text-xs text-gray-500">
+                                by {card.participantName}
+                              </span>
+                              {participantId && card.participantId === participantId && (
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => startEditing(card._id, card.content)}
+                                    className="text-xs text-blue-600 hover:text-blue-800 p-1 h-auto"
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleDeleteCard(card._id)}
+                                    className="text-xs text-red-600 hover:text-red-800 p-1 h-auto"
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                            {participantId && (
+                              <Button
+                                onClick={() => handleToggleVote(card._id)}
+                                disabled={!isCardVotedByUser(card._id) && remainingVotes === 0}
+                                variant={isCardVotedByUser(card._id) ? "default" : "outline"}
+                                size="sm"
+                                className="flex items-center gap-1"
+                              >
+                                <span>👍</span>
+                                <span>{card.voteCount}</span>
+                              </Button>
                             )}
                           </div>
-                          {participantId && (
-                            <button
-                              onClick={() => handleToggleVote(card._id)}
-                              disabled={!isCardVotedByUser(card._id) && remainingVotes === 0}
-                              className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                                isCardVotedByUser(card._id)
-                                  ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed'
-                              }`}
-                            >
-                              <span>👍</span>
-                              <span>{card.voteCount}</span>
-                            </button>
-                          )}
-                        </div>
-                      </>
-                    )}
-                  </div>
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
                 ))}
                 {categoryCards.length === 0 && (
                   <div className="text-center py-8 text-gray-500">

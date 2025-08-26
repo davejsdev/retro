@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Label } from "./ui/label";
 
 interface JoinRetrospectiveProps {
   onJoin: (retrospectiveId: string, participantId: string) => void;
@@ -56,23 +60,20 @@ export function JoinRetrospective({ onJoin }: JoinRetrospectiveProps) {
 
   return (
     <div className="max-w-md mx-auto mt-20">
-      <div className="bg-white rounded-xl shadow-sm border p-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          Join Retrospective
-        </h1>
-
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="inviteCode" className="block text-sm font-medium text-gray-700 mb-2">
-              Invite Code
-            </label>
-            <input
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-center">Join Retrospective</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="inviteCode">Invite Code</Label>
+            <Input
               type="text"
               id="inviteCode"
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
               placeholder="Enter invite code"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-center text-lg font-mono"
+              className="text-center text-lg font-mono"
               maxLength={6}
             />
           </div>
@@ -100,21 +101,21 @@ export function JoinRetrospective({ onJoin }: JoinRetrospectiveProps) {
             </div>
           )}
 
-          <button
+          <Button
             onClick={handleJoin}
             disabled={!retrospective || isJoining}
-            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="w-full"
           >
             {isJoining ? "Joining..." : "Join Retrospective"}
-          </button>
-        </div>
+          </Button>
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-500 text-center">
-            You'll be assigned a random anonymous name when you join
-          </p>
-        </div>
-      </div>
+          <div className="pt-6 border-t">
+            <p className="text-xs text-gray-500 text-center">
+              You'll be assigned a random anonymous name when you join
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
